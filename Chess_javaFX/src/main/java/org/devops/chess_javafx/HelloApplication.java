@@ -1,4 +1,4 @@
-package com.chess.chess;
+package org.devops.chess_javafx;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

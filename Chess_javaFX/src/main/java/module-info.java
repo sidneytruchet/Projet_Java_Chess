@@ -1,4 +1,4 @@
-module com.chess.chess {
+module org.devops.chess_javafx {
     requires javafx.controls;
     requires javafx.fxml;
 
@@ -7,6 +7,6 @@ module com.chess.chess {
     requires net.synedra.validatorfx;
     requires org.kordamp.bootstrapfx.core;
 
-    opens com.chess.chess to javafx.fxml;
-    exports com.chess.chess;
+    opens org.devops.chess_javafx to javafx.fxml;
+    exports org.devops.chess_javafx;
 }
