@@ -11,9 +11,18 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+        // Taille de base HD au lieu de 320x240
+        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
+
+        stage.setTitle("Chess JavaFX - LP DevOps");
         stage.setScene(scene);
+
+        // Lance la fenêtre maximisée (prend tout l'écran)
+        stage.setMaximized(true);
         stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch();
     }
 }
