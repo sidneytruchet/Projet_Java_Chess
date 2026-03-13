@@ -7,6 +7,6 @@ module org.devops.chess_javafx {
     requires net.synedra.validatorfx;
     requires org.kordamp.bootstrapfx.core;
 
-    opens org.devops.chess_javafx to javafx.fxml;
-    exports org.devops.chess_javafx;
+    opens Interface to javafx.fxml;
+    exports Interface;
 }
