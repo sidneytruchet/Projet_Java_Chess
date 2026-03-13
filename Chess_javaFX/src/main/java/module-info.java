@@ -9,4 +9,6 @@ module org.devops.chess_javafx {
 
     opens org.devops.chess_javafx to javafx.fxml;
     exports org.devops.chess_javafx;
+    opens Interface to javafx.fxml;
+    exports Interface;
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+
+<?import javafx.scene.layout.GridPane?>
+<?import org.controlsfx.control.GridCell?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.shape.Circle?>
+<GridPane alignment="CENTER" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Interface.ChessboadController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <GridPane fx:id="ChessboardGrid" alignment="CENTER">
+    </GridPane>
+
+    <Circle fill="gray" radius="25" visible="true" onMouseClicked="#onAbandonButtonClic">
+        <cursor>
+            <Cursor fx:constant="HAND"/>
+        </cursor>
+
+    </Circle>
+<!--    <Label fx:id="TestText"/>-->
+<!--    <Button text="Hello!" onAction="#onAbandonButtonClic"/>-->
+</GridPane>

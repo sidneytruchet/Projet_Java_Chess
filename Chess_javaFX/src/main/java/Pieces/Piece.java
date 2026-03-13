@@ -1,6 +1,14 @@
 package Pieces;
 
-// Modèle pour toutes les pièces
+public abstract class Piece {
 
-public interface Piece {
+    int Position_X = 0;
+    int Position_Y = 0;
+    boolean isTeamWhite = true;
+
+    public Piece (boolean IsTeamWhite) {
+        isTeamWhite = IsTeamWhite;
+
+
+    }
 }
