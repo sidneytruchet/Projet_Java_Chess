@@ -91,8 +91,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>Interface/chessboard-view.fxml</mainClass>
-                            <launcher>app</launcher>
+                            <mainClass>org.devops.chess_javafx/org.devops.chess_javafx.HelloApplication</mainClass>                            <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
                             <noManPages>true</noManPages>
