@@ -7,7 +7,7 @@ import java.net.URL;
 
 public class HelloController {
 
-    // On cible la couche du fond pour mettre l'image
+
     @FXML
     private Pane backgroundPane;
 
