@@ -4,6 +4,10 @@ import javafx.fxml.FXML;
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
 import java.net.URL;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import Interface.Chessboard;
 
 public class HelloController {
 
@@ -31,7 +35,26 @@ public class HelloController {
 
     @FXML
     protected void onOnlineGameClick() {
-        System.out.println("Bouton Jouer en Ligne cliqué");
+        System.out.println("Transition vers l'échiquier en cours...");
+        try {
+            // 1. On va chercher le fichier FXML exactement là où la classe Chessboard l'attend
+            FXMLLoader fxmlLoader = new FXMLLoader(Chessboard.class.getResource("chessboard-view.fxml"));
+
+            // 2. On génère la nouvelle scène (1280 x 720)
+            Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
+
+            // 3. On récupère la fenêtre principale grâce à notre fond "Minecraft"
+            Stage stage = (Stage) backgroundPane.getScene().getWindow();
+
+            // 4. On remplace la scène et on met à jour le titre
+            stage.setTitle("Chess JavaFX - Partie en cours");
+            stage.setScene(scene);
+            stage.setMaximized(true); // On maintient le plein écran
+
+        } catch (Exception e) {
+            System.out.println("Erreur lors du chargement du plateau : " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @FXML
