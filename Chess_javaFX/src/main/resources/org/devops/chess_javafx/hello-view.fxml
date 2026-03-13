@@ -1,16 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.GaussianBlur?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="org.devops.chess_javafx.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.devops.chess_javafx.HelloController">
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+    <Pane fx:id="backgroundPane">
+        <effect>
+            <GaussianBlur radius="15.0" />
+        </effect>
+    </Pane>
+
+    <VBox alignment="CENTER" spacing="30.0" maxWidth="500.0" maxHeight="400.0"
+          style="-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 20; -fx-padding: 40;">
+
+        <Label text="CHESS JAVAFX" textFill="#f8f9fa">
+            <font>
+                <Font name="Georgia Bold" size="48.0" />
+            </font>
+            <effect>
+                <DropShadow color="#000000" offsetX="2.0" offsetY="4.0" radius="10.0" />
+            </effect>
+        </Label>
+
+        <Label text="Projet Java - LP DevOps 2026" textFill="#bdc3c7">
+            <font>
+                <Font name="System Italic" size="18.0" />
+            </font>
+            <VBox.margin>
+                <Insets bottom="20.0" />
+            </VBox.margin>
+        </Label>
+
+        <VBox alignment="CENTER" spacing="20.0">
+            <Button minWidth="280.0" minHeight="55.0" onAction="#onOnlineGameClick"
+                    style="-fx-background-color: linear-gradient(to right, #11998e, #38ef7d); -fx-text-fill: #1a1a1a; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 30; -fx-cursor: hand;"
+                    text="🌐  Jouer en Ligne" />
+
+            <Button minWidth="280.0" minHeight="50.0" onAction="#onQuitClick"
+                    style="-fx-background-color: transparent; -fx-border-color: #ff4b4b; -fx-border-radius: 30; -fx-border-width: 2; -fx-text-fill: #ff4b4b; -fx-font-size: 16px; -fx-cursor: hand;"
+                    text="❌  Quitter" />
+        </VBox>
+    </VBox>
+</StackPane>
