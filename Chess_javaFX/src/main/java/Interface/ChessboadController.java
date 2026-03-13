@@ -18,7 +18,7 @@ public class ChessboadController {
     @FXML
     private GridPane ChessboardGrid;
 
-//    private Array<Chess>
+
 
     @FXML
     private Label TestText;
@@ -39,10 +39,7 @@ public class ChessboadController {
                         break;
                 }
 
-//                Circle circle = new Circle(25);
-//                circle.setFill(Color.GRAY);
-//                circle.setCursor(Cursor.HAND);
-//                circle.setOnMouseClicked(this::onAbandonButtonClic);
+
 
                 ChessboardGrid.add(rectangle, i, j);
             }

@@ -17,7 +17,7 @@ public class HelloApplication extends Application {
         stage.setTitle("Chess JavaFX - LP DevOps");
         stage.setScene(scene);
 
-        // Lance la fenêtre maximisée (prend tout l'écran)
+
         stage.setMaximized(true);
         stage.show();
     }

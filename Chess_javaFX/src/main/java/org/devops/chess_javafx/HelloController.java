@@ -8,10 +8,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import Interface.Chessboard;
+import javafx.scene.control.TextInputDialog;
+import java.util.Optional;
 
 public class HelloController {
 
-    // On cible la couche du fond pour mettre l'image
+
     @FXML
     private Pane backgroundPane;
 
@@ -35,25 +37,39 @@ public class HelloController {
 
     @FXML
     protected void onOnlineGameClick() {
-        System.out.println("Transition vers l'échiquier en cours...");
-        try {
-            // 1. On va chercher le fichier FXML exactement là où la classe Chessboard l'attend
-            FXMLLoader fxmlLoader = new FXMLLoader(Chessboard.class.getResource("chessboard-view.fxml"));
 
-            // 2. On génère la nouvelle scène (1280 x 720)
-            Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
+        // "127.0.0.1" par défaut (l'adresse locale machine)
+        TextInputDialog dialog = new TextInputDialog("127.0.0.1");
+        dialog.setTitle("Connexion au serveur");
+        dialog.setHeaderText("Rejoindre une partie en 1v1");
+        dialog.setContentText("Entrez l'adresse IP du serveur :");
 
-            // 3. On récupère la fenêtre principale grâce à notre fond "Minecraft"
-            Stage stage = (Stage) backgroundPane.getScene().getWindow();
 
-            // 4. On remplace la scène et on met à jour le titre
-            stage.setTitle("Chess JavaFX - Partie en cours");
-            stage.setScene(scene);
-            stage.setMaximized(true); // On maintient le plein écran
+        Optional<String> result = dialog.showAndWait();
 
-        } catch (Exception e) {
-            System.out.println("Erreur lors du chargement du plateau : " + e.getMessage());
-            e.printStackTrace();
+
+        if (result.isPresent()) {
+            String ipServeur = result.get();
+            System.out.println("Tentative de connexion à l'IP : " + ipServeur);
+
+            try {
+
+                Communication.ChessClient client = new Communication.ChessClient();
+                client.connecterAuServeur(ipServeur, 8080);
+
+
+                FXMLLoader fxmlLoader = new FXMLLoader(Chessboard.class.getResource("chessboard-view.fxml"));
+                Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
+
+                Stage stage = (Stage) backgroundPane.getScene().getWindow();
+                stage.setTitle("Chess JavaFX - Partie réseau (Connecté à " + ipServeur + ")");
+                stage.setScene(scene);
+                stage.setMaximized(true);
+
+            } catch (Exception e) {
+                System.out.println("Erreur réseau ou chargement du plateau : " + e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
