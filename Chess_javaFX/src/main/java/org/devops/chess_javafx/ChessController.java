@@ -56,6 +56,9 @@ public class ChessController {
                 caseTemp.getChildren().addAll(rectangle, circle);
 
                 ChessboardGrid.add(caseTemp, i, j);
+
+
+                SetStartingPlayer(true);
             }
         }
     }
@@ -73,9 +76,9 @@ public class ChessController {
 
         List<Node> NodeTemp = ChessboardGrid.getChildren();
 
-//        for ()
-//
-//        caseTemp.getChildren().add(piece);
+        for (int i=0; i<8; i++) {
+//            caseTemp.getChildren().add(piece);
+        }
     }
 
     private List<List<Piece>> getPieces() {
