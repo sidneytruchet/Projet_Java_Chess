@@ -11,7 +11,7 @@ public class ChessClient {
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
-
+    private String maCouleur = "";
 
     public void connecterAuServeur(String adresseIp, int port) {
         try {
@@ -19,7 +19,7 @@ public class ChessClient {
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            System.out.println("Connecté au serveur.");
+            System.out.println("Connecte au serveur.");
             demarrerEcoute();
         } catch (IOException e) {
             System.err.println("Impossible de se connecter au serveur : " + e.getMessage());
@@ -37,18 +37,32 @@ public class ChessClient {
     private void demarrerEcoute() {
         new Thread(() -> {
             try {
-                String coupAdverse;
-                while ((coupAdverse = in.readLine()) != null) {
-                    final String coupRecu = coupAdverse;
+                String texteRecu;
+                while ((texteRecu = in.readLine()) != null) {
 
+                    final String messageFinal = texteRecu;
 
                     Platform.runLater(() -> {
-                        System.out.println("Application du coup adverse sur le plateau : " + coupRecu);
 
+                        if (messageFinal.startsWith("SYSTEM:COLOR:")) {
+
+
+                            maCouleur = messageFinal.split(":")[2];
+
+                            if (maCouleur.equals("WHITE")) {
+                                System.out.println("[Systeme] Vous jouez les BLANCS ! C'est a vous de commencer.");
+                            } else {
+                                System.out.println("[Systeme] Vous jouez les NOIRS ! Attendez le coup de l'adversaire.");
+                            }
+
+                        } else {
+
+                            System.out.println("[Adversaire] " + messageFinal);
+                        }
                     });
                 }
             } catch (IOException e) {
-                System.err.println("Déconnexion du serveur.");
+                System.err.println("Deconnexion du serveur.");
             }
         }).start();
     }
