@@ -20,7 +20,7 @@ public class ChessServer {
             Socket player2Socket = serverSocket.accept();
             System.out.println("Joueur 2 connecté.");
 
-            //
+
             PlayerHandler player1Handler = new PlayerHandler(player1Socket, player2Socket);
             PlayerHandler player2Handler = new PlayerHandler(player2Socket, player1Socket);
 
