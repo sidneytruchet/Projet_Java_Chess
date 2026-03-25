@@ -2,7 +2,11 @@ package org.devops.chess_javafx;
 
 import javafx.fxml.FXML;
 import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+
+import java.io.IOException;
 import java.net.URL;
 
 public class HelloController {
@@ -30,7 +34,7 @@ public class HelloController {
     }
 
     @FXML
-    protected void onOnlineGameClick() {
+    protected void onOnlineGameClick() throws IOException {
         System.out.println("Bouton Jouer en Ligne cliqué");
     }
 
