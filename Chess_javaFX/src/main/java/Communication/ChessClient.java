@@ -12,24 +12,29 @@ public class ChessClient {
     private PrintWriter out;
     private BufferedReader in;
 
-
     public void connecterAuServeur(String adresseIp, int port) {
         try {
             socket = new Socket(adresseIp, port);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            System.out.println("Connecté au serveur.");
+            System.out.println("Connecté au serveur de jeu !");
             demarrerEcoute();
+
+
+            envoyerMessage("Bonjour ! La connexion est établie.");
+
         } catch (IOException e) {
-            System.err.println("Impossible de se connecter au serveur : " + e.getMessage());
+            System.err.println("Impossible de se connecter : " + e.getMessage());
         }
     }
 
 
-    public void envoyerCoup(String coup) {
+    public void envoyerMessage(String texte) {
         if (out != null) {
-            out.println(coup);
+            out.println(texte);
+
+            System.out.println("[Moi] " + texte);
         }
     }
 
@@ -37,13 +42,17 @@ public class ChessClient {
     private void demarrerEcoute() {
         new Thread(() -> {
             try {
-                String coupAdverse;
-                while ((coupAdverse = in.readLine()) != null) {
-                    final String coupRecu = coupAdverse;
+                String texteRecu;
+
+                while ((texteRecu = in.readLine()) != null) {
+
+                    final String messageFinal = texteRecu;
 
 
                     Platform.runLater(() -> {
-                        System.out.println("Application du coup adverse sur le plateau : " + coupRecu);
+                        System.out.println("[Adversaire] " + messageFinal);
+
+
 
                     });
                 }
