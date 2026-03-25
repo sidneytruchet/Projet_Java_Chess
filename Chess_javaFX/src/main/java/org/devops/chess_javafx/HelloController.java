@@ -2,16 +2,18 @@ package org.devops.chess_javafx;
 
 import javafx.fxml.FXML;
 import javafx.application.Platform;
+import javafx.scene.layout.Pane;
+import java.net.URL;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
-
-import java.io.IOException;
-import java.net.URL;
+import javafx.stage.Stage;
+import Interface.Chessboard;
+import javafx.scene.control.TextInputDialog;
+import java.util.Optional;
 
 public class HelloController {
 
-    // On cible la couche du fond pour mettre l'image
+
     @FXML
     private Pane backgroundPane;
 
@@ -34,8 +36,41 @@ public class HelloController {
     }
 
     @FXML
-    protected void onOnlineGameClick() throws IOException {
-        System.out.println("Bouton Jouer en Ligne cliqué");
+    protected void onOnlineGameClick() {
+
+        // "127.0.0.1" par défaut (l'adresse locale machine)
+        TextInputDialog dialog = new TextInputDialog("127.0.0.1");
+        dialog.setTitle("Connexion au serveur");
+        dialog.setHeaderText("Rejoindre une partie en 1v1");
+        dialog.setContentText("Entrez l'adresse IP du serveur :");
+
+
+        Optional<String> result = dialog.showAndWait();
+
+
+        if (result.isPresent()) {
+            String ipServeur = result.get();
+            System.out.println("Tentative de connexion à l'IP : " + ipServeur);
+
+            try {
+
+                Communication.ChessClient client = new Communication.ChessClient();
+                client.connecterAuServeur(ipServeur, 8080);
+
+
+                FXMLLoader fxmlLoader = new FXMLLoader(Chessboard.class.getResource("chessboard-view.fxml"));
+                Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
+
+                Stage stage = (Stage) backgroundPane.getScene().getWindow();
+                stage.setTitle("Chess JavaFX - Partie réseau (Connecté à " + ipServeur + ")");
+                stage.setScene(scene);
+                stage.setMaximized(true);
+
+            } catch (Exception e) {
+                System.out.println("Erreur réseau ou chargement du plateau : " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML
