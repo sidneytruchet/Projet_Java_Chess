@@ -7,7 +7,6 @@ import java.net.URL;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import Interface.Chessboard;
 import javafx.scene.control.TextInputDialog;
 import java.util.Optional;
 
@@ -58,7 +57,7 @@ public class HelloController {
                 client.connecterAuServeur(ipServeur, 8080);
 
 
-                FXMLLoader fxmlLoader = new FXMLLoader(Chessboard.class.getResource("chessboard-view.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(ChessController.class.getResource("chess-view.fxml"));
                 Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
 
                 Stage stage = (Stage) backgroundPane.getScene().getWindow();
