@@ -56,9 +56,12 @@ public class HelloController {
                 Communication.ChessClient client = new Communication.ChessClient();
                 client.connecterAuServeur(ipServeur, 8080);
 
-
                 FXMLLoader fxmlLoader = new FXMLLoader(ChessController.class.getResource("chess-view.fxml"));
                 Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
+
+                ChessController controller = fxmlLoader.getController();
+                controller.assignerClient(client);
+                client.assignerController(controller);
 
                 Stage stage = (Stage) backgroundPane.getScene().getWindow();
                 stage.setTitle("Chess JavaFX - Partie réseau (Connecté à " + ipServeur + ")");

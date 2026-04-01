@@ -1,5 +1,6 @@
 package org.devops.chess_javafx;
 
+import Communication.ChessClient;
 import Pieces.*;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -12,7 +13,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +20,10 @@ import java.util.List;
 public class ChessController {
     @FXML
     private GridPane ChessboardGrid;
+
+    private StackPane[][] ChessboardRef = new StackPane[8][8];
+    private ChessClient client;
+
     private PlayerColor playerColor = PlayerColor.white;
     enum PlayerColor {
         white,
@@ -32,11 +36,11 @@ public class ChessController {
         Paint bisque = Paint.valueOf("BISQUE");
         Paint black = Paint.valueOf("SADDLEBROWN");
 
-        for (int i=0; i<8; i++) {
-            for (int j=0; j<8; j++) {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
                 // Case de l'échiquier
                 Rectangle rectangle = new Rectangle(90, 90);
-                switch ((i + j) %2) {
+                switch ((row + col) %2) {
                     case (0):
                         rectangle.setFill(bisque);
                         break;
@@ -55,29 +59,40 @@ public class ChessController {
                 StackPane caseTemp = new StackPane();
                 caseTemp.getChildren().addAll(rectangle, circle);
 
-                ChessboardGrid.add(caseTemp, i, j);
-
-
-                SetStartingPlayer(true);
+                ChessboardRef[row][col] = caseTemp;
+                ChessboardGrid.add(caseTemp, row, col);
             }
         }
     }
 
-    public void SetStartingPlayer(boolean IsStarting) {
+    //region Communication avec le serveur
+    public void assignerClient(ChessClient client) {
+        this.client = client;
+    }
+
+    // endregion
+
+    public void SetPieces(boolean IsStarting) {
+
         List<List<Piece>> Pieces = getPieces();
 
         if (!IsStarting) {
             Pieces = Pieces.reversed();
         }
 
-        ImageView piece = new ImageView(new Image("Black Pieces/spr_bishop_black.png", 50, 50, false, false));
-        piece.setSmooth(false);
-        piece.setPreserveRatio(true);
-
         List<Node> NodeTemp = ChessboardGrid.getChildren();
 
-        for (int i=0; i<8; i++) {
-//            caseTemp.getChildren().add(piece);
+        // Joueur actif
+        for (int row = 0; row<2; row++) {
+            for (int col = 0; col<8; col++) {
+                ChessboardRef[col][row].getChildren().add(Pieces.get(row).get(col));
+            }
+        }
+        // Adversaire
+        for (int row = 6; row<8; row++) {
+            for (int col = 0; col<8; col++) {
+                ChessboardRef[col][row].getChildren().add(Pieces.get(row-4).get(col));
+            }
         }
     }
 
@@ -108,6 +123,7 @@ public class ChessController {
                         new Pawn(false)
                 )
         ));
+
         Pieces.add(new ArrayList<Piece>(
                 Arrays.asList(
                         new Pawn(true),
@@ -153,6 +169,7 @@ public class ChessController {
 
     @FXML
     protected void onAbandonButtonClic(javafx.scene.input.MouseEvent event) {
-        ChessboardGrid.getChildren().clear();
+//        ChessboardGrid.getChildren().clear();
+//        initialize();
     }
 }

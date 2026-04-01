@@ -2,11 +2,23 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
 <GridPane alignment="CENTER" xmlns:fx="http://javafx.com/fxml"
           fx:controller="org.devops.chess_javafx.ChessController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
 
-    <GridPane fx:id="ChessboardGrid" alignment="CENTER" minWidth="720" minHeight="720" gridLinesVisible="true"/>
+    <HBox spacing="100">
+        <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        </padding>
+
+        <VBox spacing="10" alignment="CENTER" prefWidth="250">
+            <TextArea fx:id="chatDisplay" minHeight="500" editable="false"/>
+            <TextField fx:id="chatInput" promptText="[Entrez un message]"/>
+        </VBox>
+        <GridPane fx:id="ChessboardGrid" alignment="CENTER" minWidth="720" minHeight="720" gridLinesVisible="true"/>
+    </HBox>
 </GridPane>
