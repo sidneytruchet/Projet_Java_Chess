@@ -8,14 +8,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.function.Consumer;
 
 public class ChessClient {
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
     private String maCouleur = "";
-
 
     private ChessController controller;
 
@@ -32,13 +30,11 @@ public class ChessClient {
         }
     }
 
-
     public void envoyerCoup(String coup) {
         if (out != null) {
             out.println(coup);
         }
     }
-
 
     private void demarrerEcoute() {
         new Thread(() -> {
@@ -52,19 +48,36 @@ public class ChessClient {
 
                         if (messageFinal.startsWith("SYSTEM:COLOR:")) {
 
-
                             maCouleur = messageFinal.split(":")[2];
 
                             if (maCouleur.equals("WHITE")) {
                                 System.out.println("[Systeme] Vous jouez les BLANCS ! C'est a vous de commencer.");
+                                controller.setStartingPlayer(true); // <--- L'INFO PASSE AU JEU
                                 controller.SetPieces(true);
                             } else {
                                 System.out.println("[Systeme] Vous jouez les NOIRS ! Attendez le coup de l'adversaire.");
+                                controller.setStartingPlayer(false); // <--- L'INFO PASSE AU JEU
                                 controller.SetPieces(false);
                             }
 
-                        } else {
+                        } else if (messageFinal.startsWith("MOVE:")) {
+                            String[] data = messageFinal.substring(5).split(":");
+                            String[] depart = data[0].split(",");
+                            String[] arrivee = data[1].split(",");
 
+                            int r1 = Integer.parseInt(depart[0]);
+                            int c1 = Integer.parseInt(depart[1]);
+                            int r2 = Integer.parseInt(arrivee[0]);
+                            int c2 = Integer.parseInt(arrivee[1]);
+
+                            if (controller != null) {
+                                controller.recevoirCoupAdverse(r1, c1, r2, c2);
+                            }
+                        } else if (messageFinal.equals("SURRENDER")) {
+                            if (controller != null) {
+                                controller.recevoirAbandon();
+                            }
+                        } else {
                             System.out.println("[Adversaire] " + messageFinal);
                         }
                     });

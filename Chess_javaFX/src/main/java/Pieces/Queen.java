@@ -1,16 +1,21 @@
 package Pieces;
 
-import javafx.scene.image.Image;
-
 public class Queen extends Piece {
     public Queen(boolean IsTeamWhite) {
         super(IsTeamWhite);
+    }
 
-        if (IsTeamWhite) {
-            this.setImage(new Image("White Pieces/spr_queen_white.png", 60.0, 60.0, true, true));
+    @Override
+    public boolean estMouvementValide(int startRow, int startCol, int endRow, int endCol, Piece[][] plateau) {
+        boolean ligneDroite = (startRow == endRow || startCol == endCol);
+        boolean diagonale = Math.abs(startRow - endRow) == Math.abs(startCol - endCol);
+
+
+        if (!ligneDroite && !diagonale) {
+            return false;
         }
-        else {
-            this.setImage(new Image("Black Pieces/spr_queen_black.png", 60.0, 60.0, true, true));
-        }
+
+
+        return estCheminLibre(startRow, startCol, endRow, endCol, plateau);
     }
 }
