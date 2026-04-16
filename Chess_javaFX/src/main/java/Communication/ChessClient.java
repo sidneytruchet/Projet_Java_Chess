@@ -33,6 +33,7 @@ public class ChessClient {
     public void envoyerCoup(String coup) {
         if (out != null) {
             out.println(coup);
+            controller.recevoirMessage(coup);
         }
     }
 
@@ -46,18 +47,20 @@ public class ChessClient {
 
                     Platform.runLater(() -> {
 
+                        System.out.println(messageFinal);
+
                         if (messageFinal.startsWith("SYSTEM:COLOR:")) {
 
                             maCouleur = messageFinal.split(":")[2];
 
                             if (maCouleur.equals("WHITE")) {
-                                System.out.println("[Systeme] Vous jouez les BLANCS ! C'est a vous de commencer.");
-                                controller.setStartingPlayer(true); // <--- L'INFO PASSE AU JEU
+                                controller.setStartingPlayer(true);
                                 controller.SetPieces(true);
+                                controller.recevoirMessage("[Systeme] Vous jouez les BLANCS ! C'est a vous de commencer.");
                             } else {
-                                System.out.println("[Systeme] Vous jouez les NOIRS ! Attendez le coup de l'adversaire.");
-                                controller.setStartingPlayer(false); // <--- L'INFO PASSE AU JEU
+                                controller.setStartingPlayer(false);
                                 controller.SetPieces(false);
+                                controller.recevoirMessage("[Systeme] Vous jouez les NOIRS ! Attendez le coup de l'adversaire.");
                             }
 
                         } else if (messageFinal.startsWith("MOVE:")) {
@@ -72,13 +75,17 @@ public class ChessClient {
 
                             if (controller != null) {
                                 controller.recevoirCoupAdverse(r1, c1, r2, c2);
+                                controller.recevoirMessage(messageFinal);
                             }
+
                         } else if (messageFinal.equals("SURRENDER")) {
                             if (controller != null) {
                                 controller.recevoirAbandon();
                             }
                         } else {
-                            System.out.println("[Adversaire] " + messageFinal);
+                            if (controller != null) {
+                                controller.recevoirMessage(messageFinal);
+                            }
                         }
                     });
                 }

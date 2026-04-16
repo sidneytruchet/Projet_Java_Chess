@@ -7,6 +7,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
 <GridPane alignment="CENTER" xmlns:fx="http://javafx.com/fxml"
           fx:controller="org.devops.chess_javafx.ChessController">
 
@@ -15,9 +16,9 @@
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
         </padding>
 
-        <VBox spacing="10" alignment="CENTER" prefWidth="250">
+        <VBox spacing="10" alignment="CENTER" prefWidth="350">
             <TextArea fx:id="chatDisplay" minHeight="500" editable="false"/>
-            <TextField fx:id="chatInput" promptText="[Entrez un message]"/>
+            <TextField fx:id="chatInput" promptText="[Entrez un message]" onAction="#envoyerMessage"/>
         </VBox>
         <GridPane fx:id="ChessboardGrid" alignment="CENTER" minWidth="720" minHeight="720" gridLinesVisible="true"/>
     </HBox>

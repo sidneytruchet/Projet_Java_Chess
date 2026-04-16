@@ -2,16 +2,20 @@ package org.devops.chess_javafx;
 
 import Communication.ChessClient;
 import Pieces.*;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -23,11 +27,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class ChessController {
+    @FXML
+    public TextField chatInput;
+    @FXML
+    private TextArea chatDisplay;
+
     @FXML
     private GridPane ChessboardGrid;
     private StackPane[][] ChessboardRef = new StackPane[8][8];
@@ -45,6 +50,7 @@ public class ChessController {
 
     public void initialize() {
         gameManager = new GameManager();
+        chatDisplay.setScrollTop(Double.MAX_VALUE);
     }
 
     public void assignerClient(ChessClient client) {
@@ -55,7 +61,6 @@ public class ChessController {
         playerColor = isWhite ? PlayerColor.white : PlayerColor.black;
         construirePlateauVisuel();
     }
-
 
     private void construirePlateauVisuel() {
         ChessboardGrid.getChildren().clear();
@@ -80,8 +85,6 @@ public class ChessController {
 
                 StackPane caseTemp = new StackPane();
                 caseTemp.getChildren().addAll(rectangle, circle);
-
-
 
                 Color textColor = ((visR + visC) % 2 == 0) ? Color.valueOf("#739552") : Color.valueOf("#ebecd0");
 
@@ -116,7 +119,6 @@ public class ChessController {
 
     public void SetPieces(boolean IsStarting) {
         Piece[][] piecesLogiques = genererPiecesLogiques();
-
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++) {
                 Piece piece = piecesLogiques[r][c];
@@ -165,8 +167,21 @@ public class ChessController {
             selectedPiece = piece;
             selectedRow = logR;
             selectedCol = logC;
-            afficherCercleSelection(logR, logC, true);
 
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    afficherCercleSelection(i, j, false);
+                    if (selectedPiece.estMouvementValide(logR, logC, i, j, gameManager.plateauLogique)) {
+                        // Savoir si pièce de la même équipe sans tester sur valeur nulle (erreur)
+                        if (gameManager.plateauLogique[i][j] != null) {
+                            if (selectedPiece.IsPieceWhite() == gameManager.plateauLogique[i][j].IsPieceWhite()) {
+                                continue;
+                            }
+                        }
+                        afficherCercleSelection(i, j, true);
+                    }
+                }
+            }
             event.consume();
         });
 
@@ -196,11 +211,15 @@ public class ChessController {
                     }
                     success = true;
                 }
-
                 afficherCercleSelection(startR, startC, false);
             }
 
             selectedPiece = null;
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    afficherCercleSelection(i, j, false);
+                }
+            }
             event.setDropCompleted(success);
             event.consume();
         });
@@ -228,14 +247,41 @@ public class ChessController {
             selectedPiece = pieceCliquee;
             selectedRow = logR;
             selectedCol = logC;
-            afficherCercleSelection(logR, logC, true);
+
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    afficherCercleSelection(i, j, false);
+                    if (selectedPiece.estMouvementValide(logR, logC, i, j, gameManager.plateauLogique)) {
+                        // Savoir si pièce de la même équipe sans tester sur valeur nulle (erreur)
+                        if (gameManager.plateauLogique[i][j] != null) {
+                            if (selectedPiece.IsPieceWhite() == gameManager.plateauLogique[i][j].IsPieceWhite()) {
+                                continue;
+                            }
+                        }
+                        afficherCercleSelection(i, j, true);
+                    }
+                }
+            }
         } else {
             if (pieceCliquee != null && pieceCliquee.IsPieceWhite() == selectedPiece.IsPieceWhite()) {
-                afficherCercleSelection(selectedRow, selectedCol, false);
                 selectedPiece = pieceCliquee;
                 selectedRow = logR;
                 selectedCol = logC;
-                afficherCercleSelection(logR, logC, true);
+
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 8; j++) {
+                        afficherCercleSelection(i, j, false);
+                        if (selectedPiece.estMouvementValide(logR, logC, i, j, gameManager.plateauLogique)) {
+                            // Savoir si pièce de la même équipe sans tester sur valeur nulle (erreur)
+                            if (gameManager.plateauLogique[i][j] != null) {
+                                if (selectedPiece.IsPieceWhite() == gameManager.plateauLogique[i][j].IsPieceWhite()) {
+                                    continue;
+                                }
+                            }
+                            afficherCercleSelection(i, j, true);
+                        }
+                    }
+                }
             } else {
                 if (gameManager.tenterUnCoup(selectedRow, selectedCol, logR, logC)) {
                     deplacerPieceVisuellement(selectedRow, selectedCol, logR, logC);
@@ -246,8 +292,12 @@ public class ChessController {
                         declencherVictoire(gagnant);
                     }
                 }
-                afficherCercleSelection(selectedRow, selectedCol, false);
                 selectedPiece = null;
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 8; j++) {
+                        afficherCercleSelection(i, j, false);
+                    }
+                }
             }
         }
     }
@@ -260,6 +310,8 @@ public class ChessController {
             String gagnant = !gameManager.isWhiteTurn() ? "Blancs" : "Noirs";
             declencherVictoire(gagnant);
         }
+
+
     }
 
     private ImageView getImage(Piece piece) {
@@ -327,6 +379,32 @@ public class ChessController {
         alert.setHeaderText("Échec et Mat !");
         alert.setContentText("Les " + gagnant + " ont gagné la partie !");
         alert.show();
+    }
+
+    @FXML
+    private void envoyerMessage() {
+        String message = chatInput.getText();
+        if (message.isEmpty()) return;
+
+        chatDisplay.appendText("Moi : " + message + "\n");
+        if (client != null) {
+            client.envoyerCoup("CHAT:" + message);
+        }
+
+        chatInput.clear();
+    }
+
+    public void recevoirMessage(String message) {
+        if (message.startsWith("CHAT:")) {
+            String msg = message.substring(5);
+            chatDisplay.appendText("Adversaire : " + msg + "\n");
+        } else if (message.startsWith("MOVE:")) {
+            String msg = message.substring(5);
+            chatDisplay.appendText("[Coup] " + msg + "\n");
+        }
+        else {
+            chatDisplay.appendText(message + "\n");
+        }
     }
 
     @FXML
