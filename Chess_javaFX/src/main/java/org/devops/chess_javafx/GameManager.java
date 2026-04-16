@@ -4,7 +4,7 @@ import Pieces.King;
 import Pieces.Piece;
 
 public class GameManager {
-    private Piece[][] plateauLogique;
+    public Piece[][] plateauLogique;
     private boolean isWhiteTurn = true;
 
     public GameManager() {

@@ -14,7 +14,6 @@ public class Rook extends Piece {
             return false; // Mouvement en diagonale ou tordu interdit !
         }
 
-
-        return true;
+        return estCheminLibre(startRow, startCol, endRow, endCol, plateau);
     }
 }
