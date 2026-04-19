@@ -88,7 +88,6 @@ public class ChessController {
 
                 Color textColor = ((visR + visC) % 2 == 0) ? Color.valueOf("#739552") : Color.valueOf("#ebecd0");
 
-
                 if (visC == 0) {
                     Text rankText = new Text(String.valueOf(8 - logR));
                     rankText.setFont(Font.font("System", FontWeight.BOLD, 12));
@@ -97,7 +96,6 @@ public class ChessController {
                     StackPane.setMargin(rankText, new Insets(3, 0, 0, 3)); // Petite marge pour aérer
                     caseTemp.getChildren().add(rankText);
                 }
-
 
                 if (visR == 7) {
                     Text fileText = new Text(String.valueOf((char)('a' + logC)));
@@ -203,7 +201,13 @@ public class ChessController {
 
                 if (gameManager.tenterUnCoup(startR, startC, logR, logC)) {
                     deplacerPieceVisuellement(startR, startC, logR, logC);
-                    if (client != null) client.envoyerCoup("MOVE:" + startR + "," + startC + ":" + logR + "," + logC);
+
+                    String commandeCoup = "MOVE:" + startR + "," + startC + ":" + logR + "," + logC;
+
+                    if (client != null) {
+                        client.envoyerCoup(commandeCoup);
+                    }
+                    recevoirMessage(commandeCoup);
 
                     if (gameManager.estEchecEtMat(gameManager.isWhiteTurn())) {
                         String gagnant = !gameManager.isWhiteTurn() ? "Blancs" : "Noirs";
@@ -285,7 +289,13 @@ public class ChessController {
             } else {
                 if (gameManager.tenterUnCoup(selectedRow, selectedCol, logR, logC)) {
                     deplacerPieceVisuellement(selectedRow, selectedCol, logR, logC);
-                    if (client != null) client.envoyerCoup("MOVE:" + selectedRow + "," + selectedCol + ":" + logR + "," + logC);
+
+                    String commandeCoup = "MOVE:" + selectedRow + "," + selectedCol + ":" + logR + "," + logC;
+
+                    if (client != null) {
+                        client.envoyerCoup(commandeCoup);
+                    }
+                    recevoirMessage(commandeCoup);
 
                     if (gameManager.estEchecEtMat(gameManager.isWhiteTurn())) {
                         String gagnant = !gameManager.isWhiteTurn() ? "Blancs" : "Noirs";
@@ -395,6 +405,7 @@ public class ChessController {
     }
 
     public void recevoirMessage(String message) {
+        System.out.println(message);
         if (message.startsWith("CHAT:")) {
             String msg = message.substring(5);
             chatDisplay.appendText("Adversaire : " + msg + "\n");

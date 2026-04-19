@@ -33,7 +33,6 @@ public class ChessClient {
     public void envoyerCoup(String coup) {
         if (out != null) {
             out.println(coup);
-            controller.recevoirMessage(coup);
         }
     }
 
