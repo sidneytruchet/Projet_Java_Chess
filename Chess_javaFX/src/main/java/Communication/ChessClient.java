@@ -2,7 +2,6 @@ package Communication;
 
 import javafx.application.Platform;
 import org.devops.chess_javafx.ChessController;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,8 +12,6 @@ public class ChessClient {
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
-    private String maCouleur = "";
-
     private ChessController controller;
 
     public void connecterAuServeur(String adresseIp, int port) {
@@ -22,18 +19,22 @@ public class ChessClient {
             socket = new Socket(adresseIp, port);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-            System.out.println("Connecte au serveur.");
             demarrerEcoute();
         } catch (IOException e) {
-            System.err.println("Impossible de se connecter au serveur : " + e.getMessage());
+            System.err.println("Erreur de connexion : " + e.getMessage());
         }
     }
 
-    public void envoyerCoup(String coup) {
+    public void envoyerCoup(String messageBrut) {
         if (out != null) {
-            out.println(coup);
-            controller.recevoirMessage(coup);
+            out.println(messageBrut);
+
+
+            if (messageBrut.startsWith("MOVE:")) {
+                String notation = traduireMoveEnNotation(messageBrut);
+                controller.recevoirMessage(notation);
+            }
+
         }
     }
 
@@ -42,60 +43,49 @@ public class ChessClient {
             try {
                 String texteRecu;
                 while ((texteRecu = in.readLine()) != null) {
-
-                    final String messageFinal = texteRecu;
-
+                    final String msg = texteRecu;
                     Platform.runLater(() -> {
+                        if (msg.startsWith("SYSTEM:COLOR:")) {
+                            String coul = msg.split(":")[2];
+                            boolean isWhite = coul.equals("WHITE");
+                            controller.setStartingPlayer(isWhite);
+                            controller.SetPieces(isWhite);
+                            controller.recevoirMessage("[Système] Vous jouez les " + (isWhite ? "BLANCS" : "NOIRS"));
+                        }
+                        else if (msg.startsWith("MOVE:")) {
+                            String[] data = msg.substring(5).split(":");
+                            String[] dep = data[0].split(",");
+                            String[] arr = data[1].split(",");
+                            int r1 = Integer.parseInt(dep[0]), c1 = Integer.parseInt(dep[1]);
+                            int r2 = Integer.parseInt(arr[0]), c2 = Integer.parseInt(arr[1]);
 
-                        System.out.println(messageFinal);
+                            controller.recevoirCoupAdverse(r1, c1, r2, c2);
+                            controller.recevoirMessage(traduireMoveEnNotation(msg));
+                        }
+                        else if (msg.startsWith("CHAT:")) {
 
-                        if (messageFinal.startsWith("SYSTEM:COLOR:")) {
-
-                            maCouleur = messageFinal.split(":")[2];
-
-                            if (maCouleur.equals("WHITE")) {
-                                controller.setStartingPlayer(true);
-                                controller.SetPieces(true);
-                                controller.recevoirMessage("[Systeme] Vous jouez les BLANCS ! C'est a vous de commencer.");
-                            } else {
-                                controller.setStartingPlayer(false);
-                                controller.SetPieces(false);
-                                controller.recevoirMessage("[Systeme] Vous jouez les NOIRS ! Attendez le coup de l'adversaire.");
-                            }
-
-                        } else if (messageFinal.startsWith("MOVE:")) {
-                            String[] data = messageFinal.substring(5).split(":");
-                            String[] depart = data[0].split(",");
-                            String[] arrivee = data[1].split(",");
-
-                            int r1 = Integer.parseInt(depart[0]);
-                            int c1 = Integer.parseInt(depart[1]);
-                            int r2 = Integer.parseInt(arrivee[0]);
-                            int c2 = Integer.parseInt(arrivee[1]);
-
-                            if (controller != null) {
-                                controller.recevoirCoupAdverse(r1, c1, r2, c2);
-                                controller.recevoirMessage(messageFinal);
-                            }
-
-                        } else if (messageFinal.equals("SURRENDER")) {
-                            if (controller != null) {
-                                controller.recevoirAbandon();
-                            }
-                        } else {
-                            if (controller != null) {
-                                controller.recevoirMessage(messageFinal);
-                            }
+                            controller.recevoirMessage("Adversaire : " + msg.substring(5));
+                        }
+                        else if (msg.equals("SURRENDER")) {
+                            controller.recevoirAbandon();
                         }
                     });
                 }
-            } catch (IOException e) {
-                System.err.println("Deconnexion du serveur.");
-            }
+            } catch (IOException e) { System.err.println("Déconnecté."); }
         }).start();
     }
 
-    public void assignerController(ChessController Controller) {
-        controller = Controller;
+    private String traduireMoveEnNotation(String moveMsg) {
+
+        String[] data = moveMsg.substring(5).split(":");
+        String[] arr = data[1].split(",");
+        int r = Integer.parseInt(arr[0]);
+        int c = Integer.parseInt(arr[1]);
+
+        char col = (char) ('a' + c);
+        int lig = 8 - r;
+        return "[Coup] " + col + lig;
     }
+
+    public void assignerController(ChessController c) { this.controller = c; }
 }

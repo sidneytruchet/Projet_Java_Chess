@@ -21,5 +21,8 @@
             <TextField fx:id="chatInput" promptText="[Entrez un message]" onAction="#envoyerMessage"/>
         </VBox>
         <GridPane fx:id="ChessboardGrid" alignment="CENTER" minWidth="720" minHeight="720" gridLinesVisible="true"/>
+        <Button text="Abandonner"
+                onMouseClicked="#onAbandonButtonClic"
+                style="-fx-background-color: #f1f1f1; -fx-text-fill: #333; -fx-font-weight: bold; -fx-cursor: hand;" />
     </HBox>
 </GridPane>

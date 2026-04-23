@@ -394,17 +394,9 @@ public class ChessController {
         chatInput.clear();
     }
 
-    public void recevoirMessage(String message) {
-        if (message.startsWith("CHAT:")) {
-            String msg = message.substring(5);
-            chatDisplay.appendText("Adversaire : " + msg + "\n");
-        } else if (message.startsWith("MOVE:")) {
-            String msg = message.substring(5);
-            chatDisplay.appendText("[Coup] " + msg + "\n");
-        }
-        else {
-            chatDisplay.appendText(message + "\n");
-        }
+    public void recevoirMessage(String msg) {
+        chatDisplay.appendText(msg + "\n");
+        chatDisplay.setScrollTop(Double.MAX_VALUE);
     }
 
     @FXML
