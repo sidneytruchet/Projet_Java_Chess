@@ -203,7 +203,13 @@ public class ChessController {
 
                 if (gameManager.tenterUnCoup(startR, startC, logR, logC)) {
                     deplacerPieceVisuellement(startR, startC, logR, logC);
-                    if (client != null) client.envoyerCoup("MOVE:" + startR + "," + startC + ":" + logR + "," + logC);
+
+                    String commandeCoup = "MOVE:" + startR + "," + startC + ":" + logR + "," + logC;
+
+                    if (client != null) {
+                        client.envoyerCoup(commandeCoup);
+                    }
+
 
                     if (gameManager.estEchecEtMat(gameManager.isWhiteTurn())) {
                         String gagnant = !gameManager.isWhiteTurn() ? "Blancs" : "Noirs";
@@ -285,7 +291,13 @@ public class ChessController {
             } else {
                 if (gameManager.tenterUnCoup(selectedRow, selectedCol, logR, logC)) {
                     deplacerPieceVisuellement(selectedRow, selectedCol, logR, logC);
-                    if (client != null) client.envoyerCoup("MOVE:" + selectedRow + "," + selectedCol + ":" + logR + "," + logC);
+
+                    String commandeCoup = "MOVE:" + selectedRow + "," + selectedCol + ":" + logR + "," + logC;
+
+                    if (client != null) {
+                        client.envoyerCoup(commandeCoup);
+                    }
+
 
                     if (gameManager.estEchecEtMat(gameManager.isWhiteTurn())) {
                         String gagnant = !gameManager.isWhiteTurn() ? "Blancs" : "Noirs";
@@ -381,21 +393,21 @@ public class ChessController {
         alert.show();
     }
 
-    @FXML
-    private void envoyerMessage() {
-        String message = chatInput.getText();
-        if (message.isEmpty()) return;
-
-        chatDisplay.appendText("Moi : " + message + "\n");
-        if (client != null) {
-            client.envoyerCoup("CHAT:" + message);
-        }
-
+    @FXML private void envoyerMessage() {
+        String msg = chatInput.getText();
+        if (msg.isEmpty()) return;
+        recevoirMessage("Moi : " + msg);
+        if (client != null) client.envoyerCoup("CHAT:" + msg);
         chatInput.clear();
     }
-
     public void recevoirMessage(String msg) {
-        chatDisplay.appendText(msg + "\n");
+        if (msg.startsWith("CHAT:")) {
+
+            chatDisplay.appendText("Adversaire : " + msg.substring(5) + "\n");
+        } else {
+
+            chatDisplay.appendText(msg + "\n");
+        }
         chatDisplay.setScrollTop(Double.MAX_VALUE);
     }
 
